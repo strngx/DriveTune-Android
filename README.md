@@ -140,4 +140,6 @@ DriveTune is a native Android application developed using:
 
 ## License
 
-License information will be added in a future release.
+DriveTune is licensed under the MIT License.
+
+See the [LICENSE](LICENSE) file for the complete license text.
