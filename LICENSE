@@ -1,21 +1,45 @@
-MIT License
+DriveTune Proprietary License — All Rights Reserved
 
-Copyright (c) 2026 DriveTune
+Copyright © 2026 DriveTune. All Rights Reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+IMPORTANT NOTICE: This repository and software are proprietary intellectual property. Public availability or visibility of this source code repository does NOT constitute an open-source license or permission to copy, modify, distribute, or create derivative works.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+================================================================================
+TERMS AND CONDITIONS
+================================================================================
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+1. Ownership
+DriveTune, including but not limited to its source code, application architecture, original software components, UI/UX implementation, documentation, branding, logos, icons, graphics, and original digital assets, is the exclusive proprietary intellectual property of DriveTune.
+
+2. Limited Viewing and Inspection Permission
+The source code in this repository is made publicly visible solely for transparency, security inspection, and educational viewing. Public visibility of this repository does NOT grant a copyright license, sublicense, patent license, or permission to use, compile, run, copy, or redistribute the source code beyond the limited viewing and inspection permission expressly stated herein.
+
+3. Prohibition on Copying and Reproduction
+You may not copy, reproduce, extract, clone, fork for distribution, or substantially reproduce the DriveTune source code or any substantial portions of it, whether in source code or compiled form.
+
+4. Prohibition on Modification and Derivative Works
+You may not modify, adapt, alter, translate, transform, reverse engineer, or create derivative works from the DriveTune source code or any part thereof.
+
+5. Prohibition on Redistribution and Sublicensing
+You may not redistribute, publish, republish, mirror, sublicense, sell, rent, lease, transfer, or otherwise distribute the DriveTune source code, modified versions of it, or binary builds derived therefrom.
+
+6. Prohibition on Clones and Derivative Applications
+You may not use the DriveTune source code, architecture, or design implementation to create, publish, distribute, monetize, or operate another application, service, or product that is substantially derived from or competitive with DriveTune.
+
+7. Commercial Use Restrictions
+Any commercial use of the DriveTune source code, software architecture, UI implementation, or original assets is strictly prohibited without prior explicit written permission from DriveTune.
+
+8. APK Distribution and Usage
+The publicly provided official DriveTune Android Application Package (APK) binaries may be downloaded and used by end users according to the official terms under which that APK is distributed. Downloading or using the APK does NOT grant permission to extract, decompile, reverse-engineer, repackage, modify, redistribute, or reuse DriveTune's proprietary software or assets for the purpose of creating a derivative or competing product.
+
+9. Trademark and Branding Protection
+The DriveTune name, wordmark, logo, visual identity, icons, graphics, UI design, color schemes, screenshots, and other original branding assets are protected proprietary assets and may not be reused, copied, or represented as belonging to any other project, organization, or entity without explicit written authorization.
+
+10. Third-Party Components and Dependencies
+This proprietary license applies exclusively to original DriveTune source code, assets, and documentation. Any third-party open-source libraries or components utilized by the project remain subject to their respective third-party licenses.
+
+11. Disclaimer of Warranty
+DriveTune is provided "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+12. Reservation of Rights
+All rights, title, and interest in and to DriveTune not expressly granted in this license are strictly and fully reserved by DriveTune.
