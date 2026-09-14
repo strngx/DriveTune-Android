@@ -1,0 +1,99 @@
+/* DriveTune Design Tokens */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
+:root {
+  /* Color Palette - Dark-First Premium Music Interface */
+  --bg-base: #090B10;
+  --bg-surface-1: #11151F;
+  --bg-surface-2: #181E2C;
+  --bg-surface-3: #222B3D;
+  --bg-surface-4: #2E394E;
+  
+  --bg-glass: rgba(17, 21, 31, 0.88);
+  --bg-glass-card: rgba(24, 30, 44, 0.65);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.14);
+  --border-highlight: rgba(0, 229, 153, 0.35);
+
+  /* Primary Accent: Electric Mint Emerald */
+  --accent-primary: #00E599;
+  --accent-primary-hover: #00C885;
+  --accent-primary-dim: rgba(0, 229, 153, 0.14);
+  --accent-primary-glow: rgba(0, 229, 153, 0.3);
+  --accent-text: #051A12;
+
+  /* Google Drive Brand Subtle Tints */
+  --drive-blue: #4285F4;
+  --drive-green: #34A853;
+  --drive-yellow: #FBBC05;
+  --drive-red: #EA4335;
+  --drive-badge-bg: rgba(66, 133, 244, 0.12);
+
+  /* Status Colors */
+  --status-downloaded: #00E599;
+  --status-downloaded-bg: rgba(0, 229, 153, 0.15);
+  --status-downloading: #38BDF8;
+  --status-downloading-bg: rgba(56, 189, 248, 0.15);
+  --status-cloud: #94A3B8;
+  --status-cloud-bg: rgba(148, 163, 184, 0.12);
+  --status-failed: #F87171;
+  --status-failed-bg: rgba(248, 113, 113, 0.15);
+  --status-selected: #00E599;
+
+  /* Text Hierarchy */
+  --text-primary: #FFFFFF;
+  --text-secondary: #94A3B8;
+  --text-tertiary: #64748B;
+  --text-muted: #475569;
+
+  /* Elevation Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.6);
+  --shadow-player: 0 -8px 30px rgba(0, 0, 0, 0.7);
+  --shadow-accent: 0 4px 20px rgba(0, 229, 153, 0.25);
+
+  /* Radii */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 14px;
+  --space-lg: 20px;
+  --space-xl: 28px;
+
+  /* Typography */
+  --font-family-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
+
+  /* Motion */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-family-main);
+  background-color: #040508;
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  user-select: none;
+}

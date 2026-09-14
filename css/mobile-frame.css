@@ -1,0 +1,183 @@
+/* DriveTune Android Mobile Shell & Emulator Frame */
+
+/* Shell Container (Centering on Desktop / Adapting on Mobile) */
+.app-viewport-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  min-height: 100vh;
+  padding: 20px;
+  background: radial-gradient(circle at 50% 10%, #151C28 0%, #050608 100%);
+}
+
+/* Device Emulator Controls Bar */
+.emulator-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  z-index: 10;
+}
+
+.emulator-title {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-primary);
+}
+
+.emulator-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.emulator-btn {
+  background: var(--bg-surface-3);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all var(--transition-fast);
+}
+
+.emulator-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+}
+
+.emulator-btn.active {
+  background: rgba(245, 158, 11, 0.2);
+  color: #FBBF24;
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+/* Android Device Frame */
+.android-frame {
+  position: relative;
+  width: 100%;
+  max-width: 412px;
+  height: 860px;
+  background: var(--bg-base);
+  border-radius: 40px;
+  border: 8px solid #1E2532;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 229, 153, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fullscreen / Frameless View mode */
+.app-viewport-wrapper.frameless .android-frame {
+  max-width: 100%;
+  height: 100vh;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.app-viewport-wrapper.frameless .emulator-bar {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: auto;
+  max-width: none;
+  z-index: 200;
+  opacity: 0.85;
+}
+
+/* Android Status Bar */
+.android-status-bar {
+  height: 38px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  z-index: 60;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.status-bar-time {
+  font-family: var(--font-family-main);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.2px;
+}
+
+.status-bar-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-icon-net {
+  display: flex;
+  align-items: center;
+}
+
+.status-offline-indicator {
+  display: none;
+  color: #F59E0B;
+}
+
+.status-offline-indicator.is-offline {
+  display: inline-flex;
+}
+
+/* Android Home Gesture Pill Indicator */
+.android-nav-pill-wrap {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.android-gesture-pill {
+  width: 72px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .app-viewport-wrapper {
+    padding: 0;
+  }
+  .emulator-bar {
+    display: none;
+  }
+  .android-frame {
+    max-width: 100%;
+    height: 100vh;
+    border-radius: 0;
+    border: none;
+  }
+}

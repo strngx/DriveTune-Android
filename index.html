@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DriveTune — Offline Google Drive Music Player</title>
+  <meta name="description" content="DriveTune is a modern offline-first Android music player that downloads and plays audio directly from Google Drive without internet.">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/design-tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/screens.css">
+  <link rel="stylesheet" href="css/mobile-frame.css">
+</head>
+<body>
+
+  <!-- Desktop Emulation Viewport Wrapper -->
+  <div class="app-viewport-wrapper">
+    
+    <!-- Top Emulator Controls Bar (Visible on desktop/preview for easy testing) -->
+    <header class="emulator-bar" aria-label="Device Emulator Controls">
+      <div class="emulator-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#00E599"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="#051A12"/></svg>
+        <span>DriveTune Android Preview</span>
+      </div>
+      <div class="emulator-actions">
+        <button class="emulator-btn" id="btn-toggle-offline" title="Toggle Network State (Online vs Airplane Mode)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/></svg>
+          <span>Sim: Offline</span>
+        </button>
+        <button class="emulator-btn" id="btn-toggle-empty-state" title="Toggle Empty Offline Library State">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+          <span>Empty State</span>
+        </button>
+        <button class="emulator-btn" id="btn-toggle-frame" title="Toggle Mobile Phone Bezel Frame">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span>Frame</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Android Device Frame -->
+    <main class="android-frame" id="app-root">
+      
+      <!-- 1. Android Status Bar -->
+      <div class="android-status-bar">
+        <span class="status-bar-time">9:41</span>
+        <div class="status-bar-icons">
+          <span class="status-offline-indicator" title="Airplane Mode / Offline">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+          </span>
+          <span class="status-icon-net" title="5G Signal">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M2 22h20V2z"/></svg>
+          </span>
+          <span title="Battery 95%">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><rect x="4" y="9" width="12" height="7" fill="#00E599"/><path d="M21 11v3"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <!-- Toast Container for Notifications -->
+      <div class="toast-container" id="toast-container"></div>
+
+      <!-- =====================================================================
+           SCREEN 1: ONBOARDING / GOOGLE SIGN-IN
+           ===================================================================== -->
+      <section class="screen-container" id="screen-auth" aria-label="Sign In Screen">
+        <div>
+          <div class="auth-hero-visual">
+            <div class="auth-pulse-ring"></div>
+            <div class="auth-pulse-ring"></div>
+            <div class="auth-pulse-ring"></div>
+            <div class="auth-logo-badge">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+          </div>
+          <div class="auth-headline-block">
+            <h1 class="auth-app-title">DriveTune</h1>
+            <p class="auth-tagline">Your music. Your Drive. Offline.</p>
+            <p class="auth-desc">
+              Connect your Google Drive, download your favorite audio files, and enjoy true offline playback anytime without internet.
+            </p>
+          </div>
+          <div class="auth-features-pills">
+            <div class="auth-feature-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#4285F4"><path d="M7.71 3.5L1.15 15l3.43 6 6.55-11.5L7.71 3.5z"/></svg>
+              <span>Drive Source</span>
+            </div>
+            <div class="auth-feature-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#00E599"><path d="M20 6L9 17l-5-5"/></svg>
+              <span>100% Offline</span>
+            </div>
+            <div class="auth-feature-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#FBBF24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+              <span>Hi-Res Audio</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-footer-block">
+          <button class="btn btn-google" id="btn-google-signin">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+            <span>Continue with Google</span>
+          </button>
+          <div class="auth-privacy-note">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/></svg>
+            <span>Read-only Drive access • Music stays local on your device</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           SCREEN 2: DRIVE EXPLORER
+           ===================================================================== -->
+      <section class="screen-container has-mini-player" id="screen-drive" aria-label="Google Drive Explorer">
+        <!-- Header -->
+        <div class="screen-header">
+          <div class="screen-title-wrap">
+            <h2 class="screen-title">Google Drive</h2>
+            <span class="screen-subtitle">Browse & Download Music</span>
+          </div>
+          <div class="header-actions">
+            <button class="btn-icon btn-icon-filled" id="btn-sync-drive" title="Sync Drive">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            </button>
+            <div class="user-avatar-btn" title="Google Account">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="user-avatar-img">
+            </div>
+          </div>
+        </div>
+
+        <!-- Offline notification banner in Drive screen -->
+        <div class="offline-banner">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/></svg>
+          <span class="offline-banner-text">You're currently offline. Drive browsing will resume once reconnected.</span>
+        </div>
+
+        <!-- Drive Storage Summary Card -->
+        <div class="drive-storage-card">
+          <div class="drive-storage-header">
+            <div class="drive-storage-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#4285F4"><path d="M7.71 3.5L1.15 15l3.43 6 6.55-11.5L7.71 3.5z"/></svg>
+              <span>Drive Audio Files: 18 Tracks</span>
+            </div>
+            <span class="drive-sync-btn" id="btn-view-sync-queue">
+              <span>View Sync Queue</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+          <div class="drive-storage-bar-track">
+            <div class="drive-bar-downloaded" style="width: 55%;" title="Downloaded (Local)"></div>
+            <div class="drive-bar-cloud" style="width: 45%;" title="Available in Cloud"></div>
+          </div>
+          <div class="drive-storage-legend">
+            <span><strong style="color: var(--accent-primary);">1.4 GB</strong> Downloaded</span>
+            <span><strong style="color: var(--drive-blue);">4.2 GB</strong> In Drive</span>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="margin-bottom: 14px;">
+          <div class="search-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="drive-search-input" class="search-input" placeholder="Search Drive music files...">
+          </div>
+        </div>
+
+        <!-- Multi-Select Action Floating Bar -->
+        <div class="multi-select-bar" id="multi-select-bar">
+          <span class="multi-select-count" id="multi-select-count">0 items selected</span>
+          <div class="multi-select-actions">
+            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" id="btn-select-all-drive">Select All</button>
+            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" id="btn-clear-selection">Clear</button>
+            <button class="btn btn-primary" style="padding: 6px 14px; font-size: 12px;" id="btn-download-selected">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Folder Section -->
+        <div id="drive-folders-section">
+          <div class="section-heading-row">
+            <h3 class="section-heading">Music Folders</h3>
+            <span class="section-link">4 Folders</span>
+          </div>
+          <div class="folder-scroll-row" id="drive-folders-grid"></div>
+        </div>
+
+        <!-- Folder Drilldown Back Header -->
+        <button class="btn btn-secondary" id="btn-back-drive-folders" style="display: none; align-self: flex-start; margin-bottom: 12px; padding: 6px 14px; font-size: 12px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <span>All Folders</span>
+        </button>
+
+        <!-- Audio Files Section -->
+        <div class="section-heading-row">
+          <h3 class="section-heading" id="drive-current-folder-title">All Audio Files in Drive</h3>
+        </div>
+        <div class="drive-track-list" id="drive-tracks-list"></div>
+      </section>
+
+      <!-- =====================================================================
+           SCREEN 3: MY LIBRARY (PRIMARY HOME)
+           ===================================================================== -->
+      <section class="screen-container has-mini-player is-active" id="screen-library" aria-label="My Music Library">
+        <!-- Header -->
+        <div class="screen-header">
+          <div class="screen-title-wrap">
+            <h2 class="screen-title">My Library</h2>
+            <div class="status-pill active-offline" id="lib-storage-pill">1.4 GB Offline</div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-icon btn-icon-filled" data-target-screen="sync-queue" title="Download & Sync Status">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            </button>
+            <div class="user-avatar-btn" data-target-screen="settings" title="Settings">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Avatar" class="user-avatar-img">
+            </div>
+          </div>
+        </div>
+
+        <!-- Offline notification banner in Library screen -->
+        <div class="offline-banner">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <span class="offline-banner-text">You're offline — Your downloaded music is 100% available.</span>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="margin-bottom: 16px;">
+          <div class="search-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="library-search-input" class="search-input" placeholder="Search downloaded songs, artists, albums...">
+          </div>
+        </div>
+
+        <!-- Empty State (Shown when no tracks are downloaded) -->
+        <div class="empty-state" id="lib-empty-state" style="display: none;">
+          <div class="empty-state-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <h3 class="empty-state-title">Your offline library is empty</h3>
+          <p class="empty-state-desc">Download music from your Google Drive to start listening completely offline.</p>
+          <button class="btn btn-primary btn-browse-drive">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7.71 3.5L1.15 15l3.43 6 6.55-11.5L7.71 3.5z"/></svg>
+            <span>Browse Google Drive</span>
+          </button>
+        </div>
+
+        <!-- Main Content (When library has downloaded tracks) -->
+        <div id="lib-main-content">
+          <!-- Featured / Heavy Rotation Hero -->
+          <div class="library-hero-carousel">
+            <div class="featured-album-card" id="lib-featured-card">
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80" alt="Featured Album" class="featured-album-bg" id="lib-featured-bg">
+              <div class="featured-album-gradient"></div>
+              <div class="featured-album-content">
+                <div>
+                  <div class="featured-album-tag">HEAVY ROTATION • OFFLINE</div>
+                  <div class="featured-album-title" id="lib-featured-title">Cyber Odyssey</div>
+                  <div class="featured-album-artist" id="lib-featured-artist">Kavinsky Wave • 2024</div>
+                </div>
+                <button class="featured-play-btn" data-play-album="alb-1" title="Play Album">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Library Tabs -->
+          <div class="tabs-header">
+            <button class="tab-btn is-active" data-tab-target="albums">Albums</button>
+            <button class="tab-btn" data-tab-target="playlists">Playlists</button>
+            <button class="tab-btn" data-tab-target="tracks">All Tracks</button>
+          </div>
+
+          <!-- Tab Panels -->
+          <div class="library-tab-panel" id="tab-panel-albums">
+            <div class="albums-grid" id="lib-albums-grid"></div>
+          </div>
+
+          <div class="library-tab-panel" id="tab-panel-playlists" style="display: none;">
+            <div class="playlists-grid" id="lib-playlists-grid"></div>
+          </div>
+
+          <div class="library-tab-panel" id="tab-panel-tracks" style="display: none;">
+            <div class="drive-track-list" id="lib-tracks-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           SCREEN 4: ALBUM DETAIL
+           ===================================================================== -->
+      <section class="screen-container has-mini-player" id="screen-album-detail" aria-label="Album Detail">
+        <div class="screen-header">
+          <button class="btn-icon btn-icon-filled" data-target-screen="library" title="Back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="status-pill active-offline">Album Offline</span>
+          <button class="btn-icon btn-icon-filled" title="More">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+          </button>
+        </div>
+
+        <div class="album-detail-hero">
+          <div class="album-detail-art-wrap">
+            <img src="" alt="Cover" class="album-detail-art" id="album-detail-art">
+          </div>
+          <h2 class="album-detail-title" id="album-detail-title">Album Title</h2>
+          <div class="album-detail-artist" id="album-detail-artist">Artist</div>
+          <div class="album-source-badge" id="album-detail-source">Source: /Google Drive/Music/Synthwave</div>
+          <div class="album-detail-meta" id="album-detail-meta">6 Tracks • 2024 • Offline FLAC</div>
+          
+          <div class="album-detail-actions">
+            <button class="btn btn-primary" id="btn-album-play" style="flex: 1; max-width: 160px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+              <span>Play Album</span>
+            </button>
+            <button class="btn btn-secondary" id="btn-album-download-all">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Download All</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="section-heading-row">
+          <h3 class="section-heading">Tracklist</h3>
+        </div>
+        <div class="drive-track-list" id="album-detail-tracks"></div>
+      </section>
+
+      <!-- =====================================================================
+           SCREEN 5: PLAYLISTS SCREEN & PLAYLIST DETAIL
+           ===================================================================== -->
+      <section class="screen-container has-mini-player" id="screen-playlists" aria-label="Playlists Screen">
+        <div class="screen-header">
+          <div class="screen-title-wrap">
+            <h2 class="screen-title">Your Playlists</h2>
+            <span class="screen-subtitle">Offline Mixes & Custom Sets</span>
+          </div>
+          <button class="btn btn-primary" id="btn-new-playlist" style="padding: 8px 16px; font-size: 13px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Create</span>
+          </button>
+        </div>
+
+        <div class="playlists-grid" id="playlists-screen-grid"></div>
+      </section>
+
+      <!-- Playlist Detail Screen -->
+      <section class="screen-container has-mini-player" id="screen-playlist-detail" aria-label="Playlist Detail">
+        <div class="screen-header">
+          <button class="btn-icon btn-icon-filled" data-target-screen="playlists" title="Back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="status-pill active-offline">Offline Playlist</span>
+          <button class="btn-icon btn-icon-filled" title="Playlist Options">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+          </button>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h2 class="screen-title" id="pl-detail-title">Road Trip Essentials</h2>
+          <div class="screen-subtitle" id="pl-detail-meta" style="margin-top: 4px;">4 tracks • Stored Offline</div>
+        </div>
+
+        <div class="playlist-header-actions">
+          <button class="btn btn-primary" id="btn-playlist-play" style="flex: 1;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            <span>Play Playlist</span>
+          </button>
+        </div>
+
+        <div class="section-heading-row">
+          <h3 class="section-heading">Playlist Tracks</h3>
+        </div>
+        <div class="drive-track-list" id="playlist-detail-tracks"></div>
+      </section>
+
+      <!-- =====================================================================
+           SCREEN 8: SYNC & DOWNLOAD QUEUE MANAGER
+           ===================================================================== -->
+      <section class="screen-container has-mini-player" id="screen-sync-queue" aria-label="Sync Queue Screen">
+        <div class="screen-header">
+          <button class="btn-icon btn-icon-filled" data-target-screen="library" title="Back to Library">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="screen-title-wrap" style="text-align: center;">
+            <h2 class="screen-title" style="font-size: 18px;">Sync Music</h2>
+          </div>
+          <button class="btn-icon btn-icon-filled" id="btn-sync-again" title="Sync Again">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </button>
+        </div>
+
+        <!-- Drive Connection Banner -->
+        <div class="sync-summary-banner">
+          <div class="sync-status-row">
+            <div class="sync-drive-status">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#4285F4"><path d="M7.71 3.5L1.15 15l3.43 6 6.55-11.5L7.71 3.5z"/></svg>
+              <span>Google Drive Connected</span>
+            </div>
+            <span class="badge badge-offline">Active Sync</span>
+          </div>
+
+          <div class="sync-metrics-grid">
+            <div class="sync-metric-item">
+              <div class="sync-metric-val" id="sync-available-count">18</div>
+              <div class="sync-metric-lbl">In Drive</div>
+            </div>
+            <div class="sync-metric-item">
+              <div class="sync-metric-val" id="sync-downloaded-count" style="color: var(--accent-primary);">12</div>
+              <div class="sync-metric-lbl">Downloaded</div>
+            </div>
+            <div class="sync-metric-item">
+              <div class="sync-metric-val" id="sync-storage-used">1.4 GB</div>
+              <div class="sync-metric-lbl">Device Storage</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" style="flex: 1; padding: 8px 12px; font-size: 12px;" id="btn-pause-all-sync">Pause All</button>
+            <button class="btn btn-primary" style="flex: 1; padding: 8px 12px; font-size: 12px;" data-target-screen="drive">Download More</button>
+          </div>
+        </div>
+
+        <div class="section-heading-row">
+          <h3 class="section-heading">Download Queue</h3>
+        </div>
+        <div id="sync-queue-list"></div>
+      </section>
+
+      <!-- =====================================================================
+           SCREEN 9: SETTINGS
+           ===================================================================== -->
+      <section class="screen-container has-mini-player" id="screen-settings" aria-label="Settings Screen">
+        <div class="screen-header">
+          <div class="screen-title-wrap">
+            <h2 class="screen-title">Settings</h2>
+            <span class="screen-subtitle">Storage, Playback & Account</span>
+          </div>
+        </div>
+
+        <!-- Google Account Group -->
+        <div class="settings-group">
+          <div class="settings-group-title">Google Account</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" style="width: 44px; height: 44px; border-radius: 50%;">
+                <div>
+                  <div class="settings-row-label" id="settings-user-name">Alex Vance</div>
+                  <div class="settings-row-sub" id="settings-user-email">alex.vance@gmail.com</div>
+                </div>
+              </div>
+              <span class="badge badge-drive">Connected</span>
+            </div>
+            <div class="settings-row" id="btn-sign-out" style="color: #F87171;" data-target-screen="auth">
+              <span class="settings-row-label">Sign Out</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Library & Offline Storage Group -->
+        <div class="settings-group">
+          <div class="settings-group-title">Offline Library & Storage</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Download Directory</div>
+                <div class="settings-row-sub">/storage/emulated/0/DriveTune/Music</div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Offline Music Storage</div>
+                <div class="settings-row-sub"><strong id="settings-offline-size" style="color: var(--accent-primary);">1.4 GB</strong> used on internal storage</div>
+              </div>
+            </div>
+            <div class="settings-row" id="btn-clear-storage" style="color: #F87171;">
+              <div>
+                <div class="settings-row-label">Clear Downloaded Music</div>
+                <div class="settings-row-sub">Free up device storage (files stay in Drive)</div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Playback Group -->
+        <div class="settings-group">
+          <div class="settings-group-title">Playback</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Background Audio Playback</div>
+                <div class="settings-row-sub">Continue listening when screen is turned off</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Continue Where You Left Off</div>
+                <div class="settings-row-sub">Resume track position on app restart</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- About Group -->
+        <div class="settings-group">
+          <div class="settings-group-title">About</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">DriveTune Version</div>
+                <div class="settings-row-sub">v1.0.4-prod (Offline-First Engine)</div>
+              </div>
+            </div>
+            <div class="settings-row">
+              <span class="settings-row-label">Privacy Policy</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           SCREEN 7: PERSISTENT MINI PLAYER
+           ===================================================================== -->
+      <aside class="mini-player" id="mini-player" aria-label="Mini Music Player">
+        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&q=80" alt="Mini Thumb" class="mini-thumb" id="mini-thumb">
+        <div class="mini-info">
+          <div class="mini-title-marquee" id="mini-title">Neon Horizon</div>
+          <div class="mini-artist">
+            <span id="mini-artist-text">Kavinsky Wave • FLAC</span>
+            <span class="mini-offline-badge">OFFLINE</span>
+          </div>
+        </div>
+        <div class="mini-controls">
+          <button class="btn-icon" id="mini-btn-play" title="Play / Pause">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          </button>
+          <button class="btn-icon" id="mini-btn-next" title="Next Track">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"/></svg>
+          </button>
+        </div>
+        <div class="mini-progress-bar">
+          <div class="mini-progress-fill" id="mini-progress-fill"></div>
+        </div>
+      </aside>
+
+      <!-- =====================================================================
+           BOTTOM NAVIGATION BAR
+           ===================================================================== -->
+      <nav class="bottom-nav" aria-label="Main Navigation">
+        <button class="nav-item is-active" data-target-screen="library">
+          <div class="nav-item-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+          </div>
+          <span class="nav-item-label">Library</span>
+        </button>
+
+        <button class="nav-item" data-target-screen="drive">
+          <div class="nav-item-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7.71 3.5L1.15 15l3.43 6 6.55-11.5L7.71 3.5zm3.43 0l6.56 11.5h6.86L18 3.5h-6.86zm-2.28 12.5l-3.43 6h13.72l3.43-6H8.86z"/></svg>
+          </div>
+          <span class="nav-item-label">Drive</span>
+        </button>
+
+        <button class="nav-item" data-target-screen="playlists">
+          <div class="nav-item-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
+          </div>
+          <span class="nav-item-label">Playlists</span>
+        </button>
+
+        <button class="nav-item" data-target-screen="settings">
+          <div class="nav-item-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          </div>
+          <span class="nav-item-label">Settings</span>
+        </button>
+      </nav>
+
+      <!-- Android Gesture Navigation Indicator -->
+      <div class="android-nav-pill-wrap">
+        <div class="android-gesture-pill"></div>
+      </div>
+
+      <!-- =====================================================================
+           SCREEN 6: NOW PLAYING FULL-SCREEN HERO MODAL
+           ===================================================================== -->
+      <div class="now-playing-modal" id="now-playing-modal">
+        <!-- Top bar -->
+        <div class="np-top-bar">
+          <button class="btn-icon btn-icon-filled" id="np-close-btn" title="Close Now Playing">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="np-header-title">
+            <div class="np-source-label">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#00E599"><path d="M20 6L9 17l-5-5"/></svg>
+              <span>Playing from Offline Storage</span>
+            </div>
+            <div class="np-album-subtitle" id="np-album-subtitle">Cyber Odyssey</div>
+          </div>
+          <button class="btn-icon btn-icon-filled" id="np-more-btn" title="Options">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+          </button>
+        </div>
+
+        <!-- Artwork Hero -->
+        <div class="np-art-container">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80" alt="Now Playing Art" class="np-art-img" id="np-art-img">
+        </div>
+
+        <!-- Song Metadata -->
+        <div>
+          <div class="np-meta-section">
+            <div class="np-song-info">
+              <h2 class="np-song-title" id="np-song-title">Neon Horizon</h2>
+              <div class="np-artist-name" id="np-artist-name">Kavinsky Wave — Cyber Odyssey</div>
+            </div>
+            <button class="btn-icon" id="np-heart-btn" title="Add to Favorites" style="color: var(--accent-primary);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+
+          <!-- Scrub Bar -->
+          <div class="np-progress-section">
+            <div class="np-scrub-bar-container" id="np-scrub-container">
+              <div class="np-scrub-track">
+                <div class="np-scrub-fill" id="np-scrub-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+            <div class="np-time-labels">
+              <span id="np-time-current">0:00</span>
+              <span id="np-time-remaining">-3:38</span>
+            </div>
+          </div>
+
+          <!-- Transport Main Controls -->
+          <div class="np-controls-main">
+            <button class="btn-icon" id="np-shuffle-btn" title="Shuffle">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+            <button class="btn-icon" id="np-prev-btn" title="Previous">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5"/></svg>
+            </button>
+            <button class="np-play-pause-btn" id="np-play-btn" title="Play/Pause">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            </button>
+            <button class="btn-icon" id="np-next-btn" title="Next">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"/></svg>
+            </button>
+            <button class="btn-icon" id="np-repeat-btn" title="Repeat">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            </button>
+          </div>
+
+          <!-- Bottom Utility Row -->
+          <div class="np-bottom-utility-row">
+            <span class="np-offline-badge-pill" id="np-offline-badge-text">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6L9 17l-5-5"/></svg>
+              <span>OFFLINE • 24-bit / 48kHz FLAC</span>
+            </span>
+            <button class="btn-icon" data-target-screen="playlists" title="Add to Playlist">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           GLOBAL MODAL OVERLAY & BOTTOM SHEET
+           ===================================================================== -->
+      <div class="modal-overlay" id="modal-overlay"></div>
+      <div class="bottom-sheet" id="global-bottom-sheet">
+        <div class="sheet-handle"></div>
+        <div id="bottom-sheet-content"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- JavaScript Module -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
