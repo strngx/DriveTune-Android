@@ -62,7 +62,7 @@ Google Drive      Local App Storage
 
 ## Installation
 
-1. Download the latest `DriveTune-v1.0.1.apk` from the [GitHub Releases](https://github.com/strngx/DriveTune-Android/releases) section.
+1. Download [`DriveTune-v1.0.1.apk`](releases/DriveTune-v1.0.1.apk) directly from this repository or from [GitHub Releases](https://github.com/strngx/DriveTune-Android/releases).
 2. Open the downloaded APK file on your Android device to install.
    *(Note: Android may prompt you to allow installation from your browser or file manager).*
 3. Launch **DriveTune**.
@@ -74,11 +74,12 @@ Google Drive      Local App Storage
 
 ## Download
 
-### Latest Release
+### Latest Release (v1.0.1)
 
-The latest verified production APK is available under the Releases section:
+Direct repository download and GitHub releases:
 
-🔗 **[DriveTune Releases](https://github.com/strngx/DriveTune-Android/releases)**
+- 📦 **[Download DriveTune-v1.0.1.apk (Direct Repository Link)](releases/DriveTune-v1.0.1.apk)**
+- 🔗 **[DriveTune GitHub Releases](https://github.com/strngx/DriveTune-Android/releases)**
 
 ---
 
