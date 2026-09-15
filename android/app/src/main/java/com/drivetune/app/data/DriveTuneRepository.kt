@@ -29,6 +29,9 @@ interface DriveTuneRepository {
     val authState: StateFlow<AuthState>
     val realDriveFolders: Flow<List<DriveFolderItem>>
     val realDriveAudioFiles: Flow<List<DriveAudioItem>>
+    val sharedFolders: Flow<List<DriveFolderItem>>
+    val sharedAudioFiles: Flow<List<DriveAudioItem>>
+    val sharedDrives: Flow<List<DriveFolderItem>>
     val driveStorageQuota: Flow<DriveStorageQuota?>
     val breadcrumbStack: Flow<List<DriveBreadcrumb>>
     val isDriveLoading: Flow<Boolean>
@@ -78,6 +81,15 @@ class AppDriveTuneRepository(
 
     private val _realDriveAudioFiles = MutableStateFlow<List<DriveAudioItem>>(emptyList())
     override val realDriveAudioFiles: Flow<List<DriveAudioItem>> = _realDriveAudioFiles.asStateFlow()
+
+    private val _sharedFolders = MutableStateFlow<List<DriveFolderItem>>(emptyList())
+    override val sharedFolders: Flow<List<DriveFolderItem>> = _sharedFolders.asStateFlow()
+
+    private val _sharedAudioFiles = MutableStateFlow<List<DriveAudioItem>>(emptyList())
+    override val sharedAudioFiles: Flow<List<DriveAudioItem>> = _sharedAudioFiles.asStateFlow()
+
+    private val _sharedDrives = MutableStateFlow<List<DriveFolderItem>>(emptyList())
+    override val sharedDrives: Flow<List<DriveFolderItem>> = _sharedDrives.asStateFlow()
 
     private val _driveStorageQuota = MutableStateFlow<DriveStorageQuota?>(null)
     override val driveStorageQuota: Flow<DriveStorageQuota?> = _driveStorageQuota.asStateFlow()
@@ -143,6 +155,9 @@ class AppDriveTuneRepository(
             is DriveResult.Success -> {
                 _realDriveFolders.value = result.data.folders
                 _realDriveAudioFiles.value = result.data.audioFiles
+                _sharedFolders.value = result.data.sharedFolders
+                _sharedAudioFiles.value = result.data.sharedAudioFiles
+                _sharedDrives.value = result.data.sharedDrives
                 _nextPageToken.value = result.data.nextPageToken
                 _hasNextPage.value = !result.data.nextPageToken.isNullOrEmpty()
                 _isDriveLoading.value = false
@@ -156,6 +171,7 @@ class AppDriveTuneRepository(
             }
         }
     }
+
 
     override suspend fun loadNextPage() {
         val token = _nextPageToken.value
@@ -512,6 +528,9 @@ class AppDriveTuneRepository(
         authManager.signOut {
             _realDriveFolders.value = emptyList()
             _realDriveAudioFiles.value = emptyList()
+            _sharedFolders.value = emptyList()
+            _sharedAudioFiles.value = emptyList()
+            _sharedDrives.value = emptyList()
             _driveStorageQuota.value = null
             _breadcrumbStack.value = listOf(DriveBreadcrumb("root", "Your Drive"))
             _driveError.value = null

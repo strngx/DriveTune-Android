@@ -1,5 +1,11 @@
 package com.drivetune.app.drive
 
+enum class DriveSourceType {
+    MY_DRIVE,
+    SHARED_WITH_ME,
+    SHARED_DRIVE
+}
+
 data class DriveAudioItem(
     val id: String,
     val name: String,
@@ -10,19 +16,27 @@ data class DriveAudioItem(
     val modifiedTime: String,
     val parentFolderId: String?,
     val webViewLink: String?,
-    val iconLink: String?
+    val iconLink: String?,
+    val driveId: String? = null,
+    val sourceType: DriveSourceType = DriveSourceType.MY_DRIVE,
+    val isShared: Boolean = false
 )
 
 data class DriveFolderItem(
     val id: String,
     val name: String,
     val parentId: String?,
-    val modifiedTime: String
+    val modifiedTime: String,
+    val driveId: String? = null,
+    val sourceType: DriveSourceType = DriveSourceType.MY_DRIVE,
+    val isShared: Boolean = false
 )
 
 data class DriveBreadcrumb(
     val folderId: String,
-    val folderName: String
+    val folderName: String,
+    val driveId: String? = null,
+    val sourceType: DriveSourceType = DriveSourceType.MY_DRIVE
 )
 
 data class DriveStorageQuota(
@@ -36,9 +50,13 @@ data class DriveStorageQuota(
 data class DrivePageResult(
     val folders: List<DriveFolderItem>,
     val audioFiles: List<DriveAudioItem>,
+    val sharedFolders: List<DriveFolderItem> = emptyList(),
+    val sharedAudioFiles: List<DriveAudioItem> = emptyList(),
+    val sharedDrives: List<DriveFolderItem> = emptyList(),
     val nextPageToken: String?,
     val currentFolderId: String?,
-    val currentFolderName: String
+    val currentFolderName: String,
+    val isRoot: Boolean = false
 )
 
 sealed interface DriveResult<out T> {
@@ -46,3 +64,4 @@ sealed interface DriveResult<out T> {
     data class Error(val message: String, val isAuthExpired: Boolean = false, val isOffline: Boolean = false) : DriveResult<Nothing>
     data object Loading : DriveResult<Nothing>
 }
+

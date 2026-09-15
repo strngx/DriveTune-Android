@@ -132,6 +132,23 @@ fun DriveAudioRow(
                         fontWeight = FontWeight.Bold
                     )
                 }
+                if (item.isShared) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(AccentMintDim)
+                            .border(1.dp, AccentMint.copy(alpha = 0.35f), RoundedCornerShape(4.dp))
+                            .padding(horizontal = 4.dp, vertical = 1.dp)
+                    ) {
+                        Text(
+                            text = "SHARED",
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = AccentMint
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = item.sizeFormatted,

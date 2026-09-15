@@ -86,6 +86,9 @@ import com.drivetune.app.ui.components.AddToPlaylistDialog
 import com.drivetune.app.ui.components.ConfirmDeleteDialog
 import com.drivetune.app.ui.components.TrackInfoDialog
 
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+
 @Composable
 fun NowPlayingModal(
     state: MainUiState,
@@ -123,7 +126,9 @@ fun NowPlayingModal(
                         radius = 1400f
                     )
                 )
-                .padding(horizontal = 24.dp, vertical = 20.dp),
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

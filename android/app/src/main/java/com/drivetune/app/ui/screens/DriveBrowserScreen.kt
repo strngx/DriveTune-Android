@@ -88,14 +88,29 @@ fun DriveBrowserScreen(
     var searchQuery by remember { mutableStateOf("") }
     val isInsideSubfolder = state.isInsideSubfolder
 
-    val filteredAudioFiles = remember(state.driveAudioFiles, searchQuery) {
+    val filteredMyDriveFolders = remember(state.driveFolders, searchQuery) {
+        if (searchQuery.isBlank()) state.driveFolders
+        else state.driveFolders.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    }
+
+    val filteredMyDriveAudio = remember(state.driveAudioFiles, searchQuery) {
         if (searchQuery.isBlank()) state.driveAudioFiles
         else state.driveAudioFiles.filter { it.name.contains(searchQuery, ignoreCase = true) }
     }
 
-    val filteredFolders = remember(state.driveFolders, searchQuery) {
-        if (searchQuery.isBlank()) state.driveFolders
-        else state.driveFolders.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    val filteredSharedFolders = remember(state.sharedFolders, searchQuery) {
+        if (searchQuery.isBlank()) state.sharedFolders
+        else state.sharedFolders.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    }
+
+    val filteredSharedAudio = remember(state.sharedAudioFiles, searchQuery) {
+        if (searchQuery.isBlank()) state.sharedAudioFiles
+        else state.sharedAudioFiles.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    }
+
+    val filteredSharedDrives = remember(state.sharedDrives, searchQuery) {
+        if (searchQuery.isBlank()) state.sharedDrives
+        else state.sharedDrives.filter { it.name.contains(searchQuery, ignoreCase = true) }
     }
 
     LazyColumn(
@@ -103,7 +118,7 @@ fun DriveBrowserScreen(
             .fillMaxSize()
             .background(BgBase)
             .padding(horizontal = 16.dp),
-        contentPadding = PaddingValues(top = 12.dp, bottom = 120.dp)
+        contentPadding = PaddingValues(top = 12.dp, bottom = 24.dp)
     ) {
         // Header
         item {
@@ -351,12 +366,16 @@ fun DriveBrowserScreen(
             item {
                 DriveEmptyView(isSubfolder = isInsideSubfolder)
             }
-        } else {
-            // Folders Section (if any)
-            if (filteredFolders.isNotEmpty()) {
+        } else if (isInsideSubfolder) {
+            // ==============================================================
+            // SUBFOLDER VIEW
+            // ==============================================================
+
+            // Subfolders in this folder (if any)
+            if (filteredMyDriveFolders.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Folders (${filteredFolders.size})",
+                        text = "Folders (${filteredMyDriveFolders.size})",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = TextPrimary
@@ -364,16 +383,17 @@ fun DriveBrowserScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
-                items(filteredFolders) { folderItem ->
+                items(filteredMyDriveFolders) { folderItem ->
                     FolderCard(
                         folder = DriveFolder(
                             id = folderItem.id,
                             name = folderItem.name,
-                            path = "Google Drive",
+                            path = if (folderItem.isShared) "Shared Folder" else "Google Drive",
                             trackCount = 0,
                             sizeString = "Folder"
                         ),
                         onClick = { onFolderClick(folderItem.id, folderItem.name) },
+                        badgeText = if (folderItem.isShared) "SHARED" else null,
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
                 }
@@ -383,8 +403,8 @@ fun DriveBrowserScreen(
                 }
             }
 
-            // Audio Files Section (if any)
-            if (filteredAudioFiles.isNotEmpty()) {
+            // Audio Files in this folder (if any)
+            if (filteredMyDriveAudio.isNotEmpty()) {
                 item {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -392,31 +412,16 @@ fun DriveBrowserScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Audio Files (${filteredAudioFiles.size})",
+                            text = "Audio Files (${filteredMyDriveAudio.size})",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = TextPrimary
                         )
-
-                        if (!isInsideSubfolder) {
-                            Button(
-                                onClick = onDownloadFolder,
-                                shape = CircleShape,
-                                colors = ButtonDefaults.buttonColors(containerColor = AccentMintDim, contentColor = AccentMint),
-                                border = BorderStroke(1.dp, AccentMint.copy(alpha = 0.4f)),
-                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 3.dp),
-                                modifier = Modifier.height(28.dp)
-                            ) {
-                                Icon(Icons.Default.CloudDownload, contentDescription = null, modifier = Modifier.size(12.dp))
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text("Save All Offline", fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                            }
-                        }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
-                items(filteredAudioFiles) { audioItem ->
+                items(filteredMyDriveAudio) { audioItem ->
                     val status = state.downloadStatusByFileId[audioItem.id] ?: TrackDownloadStatus.CLOUD
                     val progress = state.downloadProgressByFileId[audioItem.id] ?: 0
 
@@ -456,6 +461,216 @@ fun DriveBrowserScreen(
                     }
                 }
             }
+        } else {
+            // ==============================================================
+            // ROOT VIEW: CLEAR SECTIONS (MY DRIVE, SHARED WITH ME, SHARED DRIVES)
+            // ==============================================================
+
+            // 1. MY DRIVE SECTION
+            val hasMyDriveContent = filteredMyDriveFolders.isNotEmpty() || filteredMyDriveAudio.isNotEmpty()
+            if (hasMyDriveContent) {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "MY DRIVE",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = AccentMint,
+                            letterSpacing = 0.5.sp
+                        )
+
+                        Button(
+                            onClick = onDownloadFolder,
+                            shape = CircleShape,
+                            colors = ButtonDefaults.buttonColors(containerColor = AccentMintDim, contentColor = AccentMint),
+                            border = BorderStroke(1.dp, AccentMint.copy(alpha = 0.4f)),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 3.dp),
+                            modifier = Modifier.height(28.dp)
+                        ) {
+                            Icon(Icons.Default.CloudDownload, contentDescription = null, modifier = Modifier.size(12.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Save All Offline", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
+                // My Drive Folders
+                items(filteredMyDriveFolders) { folderItem ->
+                    FolderCard(
+                        folder = DriveFolder(
+                            id = folderItem.id,
+                            name = folderItem.name,
+                            path = "My Drive",
+                            trackCount = 0,
+                            sizeString = "Folder"
+                        ),
+                        onClick = { onFolderClick(folderItem.id, folderItem.name) },
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+
+                // My Drive Root Audio Files
+                if (filteredMyDriveAudio.isNotEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Audio Files (${filteredMyDriveAudio.size})",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = TextSecondary
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                    }
+
+                    items(filteredMyDriveAudio) { audioItem ->
+                        val status = state.downloadStatusByFileId[audioItem.id] ?: TrackDownloadStatus.CLOUD
+                        val progress = state.downloadProgressByFileId[audioItem.id] ?: 0
+
+                        DriveAudioRow(
+                            item = audioItem,
+                            isSelected = state.selectedDriveFileIds.contains(audioItem.id),
+                            downloadStatus = status,
+                            downloadProgress = progress,
+                            onToggleSelect = { onToggleSelectFile(audioItem.id) },
+                            onSaveOffline = { onSaveOfflineFile(audioItem) },
+                            onClick = { onToggleSelectFile(audioItem.id) },
+                            modifier = Modifier.padding(vertical = 3.dp)
+                        )
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+            }
+
+            // 2. SHARED WITH ME SECTION
+            val hasSharedContent = filteredSharedFolders.isNotEmpty() || filteredSharedAudio.isNotEmpty()
+            if (hasSharedContent) {
+                item {
+                    Text(
+                        text = "SHARED WITH ME",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = AccentMint,
+                        letterSpacing = 0.5.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
+                // Shared Folders
+                items(filteredSharedFolders) { folderItem ->
+                    FolderCard(
+                        folder = DriveFolder(
+                            id = folderItem.id,
+                            name = folderItem.name,
+                            path = "Shared with me",
+                            trackCount = 0,
+                            sizeString = "Folder"
+                        ),
+                        onClick = { onFolderClick(folderItem.id, folderItem.name) },
+                        badgeText = "SHARED",
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+
+                // Shared Audio Files
+                if (filteredSharedAudio.isNotEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Shared Audio Files (${filteredSharedAudio.size})",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = TextSecondary
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                    }
+
+                    items(filteredSharedAudio) { audioItem ->
+                        val status = state.downloadStatusByFileId[audioItem.id] ?: TrackDownloadStatus.CLOUD
+                        val progress = state.downloadProgressByFileId[audioItem.id] ?: 0
+
+                        DriveAudioRow(
+                            item = audioItem,
+                            isSelected = state.selectedDriveFileIds.contains(audioItem.id),
+                            downloadStatus = status,
+                            downloadProgress = progress,
+                            onToggleSelect = { onToggleSelectFile(audioItem.id) },
+                            onSaveOffline = { onSaveOfflineFile(audioItem) },
+                            onClick = { onToggleSelectFile(audioItem.id) },
+                            modifier = Modifier.padding(vertical = 3.dp)
+                        )
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+            }
+
+            // 3. SHARED DRIVES SECTION
+            if (filteredSharedDrives.isNotEmpty()) {
+                item {
+                    Text(
+                        text = "SHARED DRIVES",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = AccentMint,
+                        letterSpacing = 0.5.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
+                items(filteredSharedDrives) { driveItem ->
+                    FolderCard(
+                        folder = DriveFolder(
+                            id = driveItem.id,
+                            name = driveItem.name,
+                            path = "Shared Drive",
+                            trackCount = 0,
+                            sizeString = "Shared Drive"
+                        ),
+                        onClick = { onFolderClick(driveItem.id, driveItem.name) },
+                        badgeText = "SHARED DRIVE",
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+            }
+
+            // Pagination Load More (if root has next page token)
+            if (state.hasNextDrivePage) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (state.isDrivePaginating) {
+                            CircularProgressIndicator(color = AccentMint, modifier = Modifier.size(28.dp))
+                        } else {
+                            OutlinedButton(
+                                onClick = onLoadNextPage,
+                                shape = CircleShape,
+                                modifier = Modifier.fillMaxWidth(0.6f)
+                            ) {
+                                Text("Load More Files", color = AccentMint, fontSize = 13.sp)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
+

@@ -73,7 +73,7 @@ fun SettingsScreen(
             .fillMaxSize()
             .background(BgBase)
             .padding(horizontal = 16.dp),
-        contentPadding = PaddingValues(top = 12.dp, bottom = 120.dp)
+        contentPadding = PaddingValues(top = 12.dp, bottom = 24.dp)
     ) {
         item {
             Text(
@@ -232,7 +232,7 @@ fun SettingsScreen(
             ) {
                 SettingsRow(
                     title = "DriveTune Version",
-                    subtitle = "v1.0.0-prod (Native Android • Kotlin & Compose)",
+                    subtitle = "v1.0.1-prod (Native Android • Kotlin & Compose)",
                     onClick = {}
                 )
                 Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(BorderSubtle))

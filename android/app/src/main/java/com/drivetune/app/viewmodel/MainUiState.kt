@@ -39,6 +39,9 @@ data class MainUiState(
     // Real Drive API v3 Data
     val driveFolders: List<DriveFolderItem> = emptyList(),
     val driveAudioFiles: List<DriveAudioItem> = emptyList(),
+    val sharedFolders: List<DriveFolderItem> = emptyList(),
+    val sharedAudioFiles: List<DriveAudioItem> = emptyList(),
+    val sharedDrives: List<DriveFolderItem> = emptyList(),
     val driveStorageQuota: DriveStorageQuota? = null,
     val driveBreadcrumbs: List<DriveBreadcrumb> = listOf(DriveBreadcrumb("root", "Your Drive")),
     val isDriveLoading: Boolean = false,
@@ -87,7 +90,8 @@ data class MainUiState(
         get() = authState is AuthState.Authenticated || authenticatedUser != null
 
     val isDriveEmpty: Boolean
-        get() = !isDriveLoading && driveFolders.isEmpty() && driveAudioFiles.isEmpty() && driveError == null
+        get() = !isDriveLoading && driveFolders.isEmpty() && driveAudioFiles.isEmpty() &&
+                sharedFolders.isEmpty() && sharedAudioFiles.isEmpty() && sharedDrives.isEmpty() && driveError == null
 
     val currentFolderTitle: String
         get() = driveBreadcrumbs.lastOrNull()?.folderName ?: "Your Drive"
@@ -116,3 +120,4 @@ data class MainUiState(
             return if (totalMb > 1024) "%.1f GB".format(totalMb / 1024.0) else "%d MB".format(totalMb.toInt())
         }
 }
+

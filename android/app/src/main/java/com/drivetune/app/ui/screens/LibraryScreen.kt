@@ -148,7 +148,7 @@ fun LibraryScreen(
             .fillMaxSize()
             .background(BgBase)
             .padding(horizontal = 16.dp),
-        contentPadding = PaddingValues(top = 16.dp, bottom = 120.dp)
+        contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp)
     ) {
         // Top Header
         item {

@@ -49,8 +49,6 @@ fun DriveTuneTheme(
             val activity = view.context.findActivity()
             if (activity != null) {
                 val window = activity.window
-                window.statusBarColor = BgBase.toArgb()
-                window.navigationBarColor = BgBase.toArgb()
                 val controller = WindowCompat.getInsetsController(window, view)
                 controller.isAppearanceLightStatusBars = false
                 controller.isAppearanceLightNavigationBars = false

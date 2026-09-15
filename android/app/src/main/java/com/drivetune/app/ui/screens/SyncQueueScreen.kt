@@ -61,7 +61,7 @@ fun SyncQueueScreen(
             .fillMaxSize()
             .background(BgBase)
             .padding(horizontal = 16.dp),
-        contentPadding = PaddingValues(top = 12.dp, bottom = 120.dp)
+        contentPadding = PaddingValues(top = 12.dp, bottom = 24.dp)
     ) {
         item {
             Row(

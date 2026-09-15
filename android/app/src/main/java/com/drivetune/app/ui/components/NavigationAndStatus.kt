@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
@@ -168,9 +169,10 @@ fun DriveTuneBottomNav(
     modifier: Modifier = Modifier
 ) {
     NavigationBar(
-        modifier = modifier.height(64.dp),
+        modifier = modifier.fillMaxWidth(),
         containerColor = BgSurface2,
-        tonalElevation = 6.dp
+        tonalElevation = 6.dp,
+        windowInsets = NavigationBarDefaults.windowInsets
     ) {
         val items = listOf(
             Triple(ScreenDestination.LIBRARY, "Library", Icons.Default.LibraryMusic),

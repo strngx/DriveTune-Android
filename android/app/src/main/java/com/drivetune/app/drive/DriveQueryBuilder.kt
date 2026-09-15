@@ -8,10 +8,10 @@ object DriveQueryBuilder {
         "audio/mpeg",
         "audio/mp3",
         "audio/mp4",
-        "audio/wav",
-        "audio/x-wav",
         "audio/x-m4a",
         "audio/m4a",
+        "audio/wav",
+        "audio/x-wav",
         "audio/flac",
         "audio/x-flac",
         "audio/ogg",
@@ -20,29 +20,62 @@ object DriveQueryBuilder {
         "audio/x-aac",
         "audio/webm",
         "audio/opus",
+        "audio/x-ms-wma",
+        "audio/x-aiff",
         "application/ogg",
         "application/x-flac"
     )
 
     val AUDIO_EXTENSIONS = setOf(
-        "mp3", "flac", "m4a", "wav", "ogg", "aac", "webm", "opus", "wma", "aiff"
+        "mp3", "flac", "m4a", "wav", "ogg", "aac", "webm", "opus", "wma", "aiff", "mp4"
     )
+
+    const val AUDIO_FILE_FILTER = "(" +
+        "mimeType contains 'audio/' or " +
+        "mimeType = 'application/ogg' or " +
+        "mimeType = 'application/x-flac' or " +
+        "fileExtension = 'mp3' or " +
+        "fileExtension = 'flac' or " +
+        "fileExtension = 'm4a' or " +
+        "fileExtension = 'wav' or " +
+        "fileExtension = 'ogg' or " +
+        "fileExtension = 'aac' or " +
+        "fileExtension = 'webm' or " +
+        "fileExtension = 'opus' or " +
+        "fileExtension = 'wma' or " +
+        "fileExtension = 'aiff')"
+
+    const val AUDIO_AND_FOLDER_FILTER = "(" +
+        "mimeType = '$FOLDER_MIME_TYPE' or " +
+        "mimeType contains 'audio/' or " +
+        "mimeType = 'application/ogg' or " +
+        "mimeType = 'application/x-flac' or " +
+        "fileExtension = 'mp3' or " +
+        "fileExtension = 'flac' or " +
+        "fileExtension = 'm4a' or " +
+        "fileExtension = 'wav' or " +
+        "fileExtension = 'ogg' or " +
+        "fileExtension = 'aac' or " +
+        "fileExtension = 'webm' or " +
+        "fileExtension = 'opus' or " +
+        "fileExtension = 'wma' or " +
+        "fileExtension = 'aiff')"
 
     fun buildQueryForFolder(folderId: String?): String {
         val parentTarget = if (folderId.isNullOrEmpty() || folderId == "root") "root" else folderId
-        
-        // Build query selecting non-trashed folders or audio files within this parent
-        return "trashed = false and '$parentTarget' in parents and (" +
-                "mimeType = '$FOLDER_MIME_TYPE' or " +
-                "mimeType contains 'audio/' or " +
-                "mimeType = 'application/ogg' or " +
-                "mimeType = 'application/x-flac' or " +
-                "fileExtension = 'mp3' or " +
-                "fileExtension = 'flac' or " +
-                "fileExtension = 'm4a' or " +
-                "fileExtension = 'wav' or " +
-                "fileExtension = 'ogg' or " +
-                "fileExtension = 'aac')"
+        return "trashed = false and '$parentTarget' in parents and $AUDIO_AND_FOLDER_FILTER"
+    }
+
+    fun buildSharedWithMeQuery(): String {
+        return "trashed = false and sharedWithMe = true and $AUDIO_AND_FOLDER_FILTER"
+    }
+
+    fun buildAllAudioQuery(): String {
+        return "trashed = false and $AUDIO_FILE_FILTER"
+    }
+
+    fun buildAllAudioInFolderQuery(folderId: String): String {
+        return "trashed = false and '$folderId' in parents and $AUDIO_FILE_FILTER"
     }
 
     fun isAudioFile(mimeType: String?, fileName: String?): Boolean {
@@ -69,6 +102,7 @@ object DriveQueryBuilder {
             "audio/ogg", "audio/x-ogg", "application/ogg" -> "OGG"
             "audio/aac", "audio/x-aac" -> "AAC"
             "audio/webm" -> "WEBM"
+            "audio/opus" -> "OPUS"
             else -> "AUDIO"
         }
     }
@@ -86,3 +120,4 @@ object DriveQueryBuilder {
         }
     }
 }
+

@@ -86,6 +86,21 @@ class MainViewModel @JvmOverloads constructor(
             }
         }
         viewModelScope.launch {
+            repository.sharedFolders.collect { sharedF ->
+                _uiState.update { it.copy(sharedFolders = sharedF) }
+            }
+        }
+        viewModelScope.launch {
+            repository.sharedAudioFiles.collect { sharedA ->
+                _uiState.update { it.copy(sharedAudioFiles = sharedA) }
+            }
+        }
+        viewModelScope.launch {
+            repository.sharedDrives.collect { sharedD ->
+                _uiState.update { it.copy(sharedDrives = sharedD) }
+            }
+        }
+        viewModelScope.launch {
             repository.driveStorageQuota.collect { quota ->
                 _uiState.update { it.copy(driveStorageQuota = quota) }
             }
@@ -303,7 +318,7 @@ class MainViewModel @JvmOverloads constructor(
     }
 
     fun selectAllDriveFiles() {
-        val allIds = _uiState.value.driveAudioFiles.map { it.id }.toSet()
+        val allIds = (_uiState.value.driveAudioFiles + _uiState.value.sharedAudioFiles).map { it.id }.toSet()
         _uiState.update { it.copy(selectedDriveFileIds = allIds) }
     }
 
@@ -315,7 +330,8 @@ class MainViewModel @JvmOverloads constructor(
         val selectedIds = _uiState.value.selectedDriveFileIds
         if (selectedIds.isEmpty()) return
 
-        val itemsToDownload = _uiState.value.driveAudioFiles.filter { selectedIds.contains(it.id) }
+        val allAudioItems = _uiState.value.driveAudioFiles + _uiState.value.sharedAudioFiles
+        val itemsToDownload = allAudioItems.filter { selectedIds.contains(it.id) }.distinctBy { it.id }
         clearDriveFileSelection()
 
         showToast("Saving ${itemsToDownload.size} audio files offline...")
@@ -541,6 +557,9 @@ class MainViewModel @JvmOverloads constructor(
                     authState = AuthState.Unauthenticated,
                     driveFolders = emptyList(),
                     driveAudioFiles = emptyList(),
+                    sharedFolders = emptyList(),
+                    sharedAudioFiles = emptyList(),
+                    sharedDrives = emptyList(),
                     driveStorageQuota = null
                 )
             }

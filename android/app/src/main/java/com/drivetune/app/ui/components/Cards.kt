@@ -41,6 +41,7 @@ import com.drivetune.app.model.Album
 import com.drivetune.app.model.DriveFolder
 import com.drivetune.app.model.Playlist
 import com.drivetune.app.theme.AccentMint
+import com.drivetune.app.theme.AccentMintDim
 import com.drivetune.app.theme.AccentText
 import com.drivetune.app.theme.BgSurface2
 import com.drivetune.app.theme.BgSurface3
@@ -231,7 +232,8 @@ fun PlaylistCard(
 fun FolderCard(
     folder: DriveFolder,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    badgeText: String? = null
 ) {
     Row(
         modifier = modifier
@@ -261,20 +263,41 @@ fun FolderCard(
         Spacer(modifier = Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = folder.name,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 13.sp,
-                color = TextPrimary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = folder.name,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 13.sp,
+                    color = TextPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+                if (!badgeText.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(AccentMintDim)
+                            .border(1.dp, AccentMint.copy(alpha = 0.35f), RoundedCornerShape(4.dp))
+                            .padding(horizontal = 5.dp, vertical = 1.dp)
+                    ) {
+                        Text(
+                            text = badgeText,
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = AccentMint
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "${folder.trackCount} audio files",
+                text = if (folder.trackCount > 0) "${folder.trackCount} audio files" else folder.path,
                 fontSize = 11.sp,
                 color = TextSecondary
             )
         }
     }
 }
+
